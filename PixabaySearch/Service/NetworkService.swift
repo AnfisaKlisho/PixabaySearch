@@ -25,38 +25,37 @@ class NetworkService{
     }
     
     //MARK:- Load Image
-    func loadImage(from url: URL?, completion: @escaping (UIImage?) -> Void){
-        guard let url = url else{
-            completion(nil)
-            return
-        }
-        URLSession.shared.dataTask(with: url) { (data, _, _) in
-            DispatchQueue.main.async {
-                if let data = data{
-                completion(UIImage(data: data))
-            }
-            else{
+    func loadImage(from url: URL?, completion: @escaping (UIImage?) -> Void) {
+            guard let url = url else {
                 completion(nil)
+                return
             }
+            
+            URLSession.shared.dataTask(with: url) { (data, _, _) in
+                DispatchQueue.main.async {
+                    if let data = data {
+                        completion(UIImage(data: data))
+                    } else {
+                        completion(nil)
+                    }
+                }
+                
+            }.resume()
+            
         }
-        
-        }.resume()
-    }
-    
+
+
     
     //MARK:- Fetch Images
-    func fetchImages(amount: Int, page: Int, query: String, completion: @escaping (Result<[ImageInfo], SessionError>) -> Void){
+    func fetchImages(amount: Int, completion: @escaping (Result<[ImageInfo], SessionError>) -> Void){
         var urlComps = baseUrlComponent
         urlComps.queryItems? += [
             URLQueryItem(name: "per_page", value: "\(amount)"),
-            URLQueryItem(name: "page", value: "\(page)"),
-            URLQueryItem(name: "q", value: query)
+            URLQueryItem(name: "editors_choice", value: "\(true)")
         ]
         
         guard let url = urlComps.url else {
-            DispatchQueue.main.async {
-                completion(.failure(.invalidURL))
-            }
+            completion(.failure(.invalidURL))
             return
         }
         

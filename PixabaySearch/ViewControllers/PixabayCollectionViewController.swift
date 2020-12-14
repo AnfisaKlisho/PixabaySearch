@@ -7,49 +7,83 @@
 
 import UIKit
 
-private let reuseIdentifier = "Cell"
+
 
 class PixabayCollectionViewController: UICollectionViewController {
+    
 
+    //private var images: [UIImage?] = []
+    private var imagesInfo = [ImageInfo]()
+    
+    private let spacing: CGFloat = 5
+    private let numberOfItemsPerRow: CGFloat = 2
+    
+   
+    //MARK:-Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+      
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+      
+        
+        loadImages()
 
         // Do any additional setup after loading the view.
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+    
+    private func loadImages(){
+        NetworkService.shared.fetchImages(amount: 30) { (result) in
+            switch result{
+            case let .failure(error):
+                print(error)
+                //MARK:-Show Alert
+            case let .success(imagesInfo):
+                self.imagesInfo = imagesInfo
+                //self.images = Array(repeating: nil, count: imagesInfo.count)
+                self.collectionView.reloadData()
+            
+            }
+        }
     }
-    */
+    
+    private func loadImage(for cell: ImageViewCell, at index: Int) {
+            let info = imagesInfo[index]
+            NetworkService.shared.loadImage(from: info.previewURL) { (image) in
+                if let image = image{
+                cell.configure(with: image)
+            }
+        }
+        
+        
+    }
+
+
+
 
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return imagesInfo.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
-        // Configure the cell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else{
+            fatalError("Invalid cell type")
+        }
+        
+        
+        loadImage(for: cell, at: indexPath.row)
     
         return cell
     }
@@ -86,3 +120,41 @@ class PixabayCollectionViewController: UICollectionViewController {
     */
 
 }
+
+extension PixabayCollectionViewController: UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let width = view.bounds.width
+        let insets = 2 * spacing
+        let rawWidth = width - spacing - insets
+        
+        let bigCellWidth = rawWidth / 2
+        let smallCellHeight = (bigCellWidth - spacing) / 2
+        let smallCellWidth = rawWidth / 2
+        
+        if indexPath.row % 4 == 0 || (indexPath.row - 1) % 4 == 0{
+            return CGSize(width: bigCellWidth, height: bigCellWidth)}
+        else{
+            return CGSize(width: smallCellWidth, height: smallCellHeight)
+            }
+        }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        
+        return UIEdgeInsets(top: spacing,
+                     left: spacing,
+                     bottom: spacing,
+                     right: spacing
+        )
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return spacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return spacing
+    }
+    }
+
+

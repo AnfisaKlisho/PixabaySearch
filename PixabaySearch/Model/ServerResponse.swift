@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct ServerResponse<T: Decodable>: Decodable {
-    var hits: [T]
+struct ServerResponse<Object: Decodable>: Decodable {
+    var hits: [Object]
 }

@@ -18,7 +18,7 @@ enum SessionError: Error{
             return error.localizedDescription
             
         case let .serverError(statusCode):
-            return "Unable to connect with server \(statusCode)"
+            return "Unable to connect with server (\(statusCode))"
         case let .other(error):
             return error.localizedDescription
         }
