@@ -12,69 +12,64 @@ import UIKit
 class PixabayCollectionViewController: UICollectionViewController {
     
 
-    //private var images: [UIImage?] = []
+    private var images: [UIImage?] = []
     private var imagesInfo = [ImageInfo]()
     
-    private let spacing: CGFloat = 5
-    private let numberOfItemsPerRow: CGFloat = 2
     
    
     //MARK:-Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        loadImages()
+        collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
-        // Register cell classes
-      
-        
-        loadImages()
-
-        // Do any additional setup after loading the view.
     }
 
-    
+    //MARK:-Load Images
     private func loadImages(){
-        NetworkService.shared.fetchImages(amount: 30) { (result) in
+        NetworkService.shared.fetchImages(amount: 40) { (result) in
             switch result{
             case let .failure(error):
                 print(error)
                 //MARK:-Show Alert
+            
             case let .success(imagesInfo):
                 self.imagesInfo = imagesInfo
-                //self.images = Array(repeating: nil, count: imagesInfo.count)
+                self.images = Array(repeating: nil, count: imagesInfo.count)
                 self.collectionView.reloadData()
             
             }
         }
     }
     
+    //MARK:-Load Image to cell
     private func loadImage(for cell: ImageViewCell, at index: Int) {
-            let info = imagesInfo[index]
-            NetworkService.shared.loadImage(from: info.previewURL) { (image) in
-                if let image = image{
-                cell.configure(with: image)
-            }
+        let info = imagesInfo[index]
+        if let image = images[index]{
+            cell.configure(with: image)
+            return
+        }
+        NetworkService.shared.loadImage(from: info.webformatURL) { (image) in
+                self.images[index] = image
+                cell.configure(with: self.images[index])
+            
         }
         
         
     }
-
-
+    
 
 
     // MARK: UICollectionViewDataSource
-
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+        return imagesInfo.count / 12 * 5
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return imagesInfo.count
+        return 12
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -82,12 +77,55 @@ class PixabayCollectionViewController: UICollectionViewController {
             fatalError("Invalid cell type")
         }
         
+        loadImage(for: cell, at: indexPath.row + indexPath.section * 12)
         
-        loadImage(for: cell, at: indexPath.row)
     
         return cell
     }
 
+    //MARK:-Compositional Layout
+    static func createLayout() -> UICollectionViewCompositionalLayout{
+        
+        let spacing: CGFloat = 2
+        //items
+        let squareBigItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalWidth(0.5)))
+        let horizontalItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5)))
+        let smallSquareItemNearHorizontal = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1)))
+        let smallSquareItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(1)))
+        
+        squareBigItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
+        horizontalItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
+        smallSquareItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
+        smallSquareItemNearHorizontal.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
+
+        //groups
+        
+        let twoSquareItemsGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5)), subitem: smallSquareItemNearHorizontal, count: 2)
+        let threeItemsGroup = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalWidth(0.5)), subitems: [
+                        horizontalItem,
+                        twoSquareItemsGroup])
+        
+        let bigGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5)), subitems: [squareBigItem, threeItemsGroup])
+        
+        let reversedBigGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5)), subitems: [threeItemsGroup, squareBigItem])
+        
+        let fourGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(1/3)), subitem: smallSquareItem, count: 4)
+        
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(4/3)), subitems: [
+            bigGroup,
+            reversedBigGroup,
+            fourGroup,
+        ])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
+
+    
+    
+    
+    
     // MARK: UICollectionViewDelegate
 
     /*
@@ -120,41 +158,3 @@ class PixabayCollectionViewController: UICollectionViewController {
     */
 
 }
-
-extension PixabayCollectionViewController: UICollectionViewDelegateFlowLayout{
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let width = view.bounds.width
-        let insets = 2 * spacing
-        let rawWidth = width - spacing - insets
-        
-        let bigCellWidth = rawWidth / 2
-        let smallCellHeight = (bigCellWidth - spacing) / 2
-        let smallCellWidth = rawWidth / 2
-        
-        if indexPath.row % 4 == 0 || (indexPath.row - 1) % 4 == 0{
-            return CGSize(width: bigCellWidth, height: bigCellWidth)}
-        else{
-            return CGSize(width: smallCellWidth, height: smallCellHeight)
-            }
-        }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        
-        return UIEdgeInsets(top: spacing,
-                     left: spacing,
-                     bottom: spacing,
-                     right: spacing
-        )
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return spacing
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return spacing
-    }
-    }
-
-
