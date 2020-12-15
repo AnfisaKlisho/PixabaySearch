@@ -23,7 +23,8 @@ class PixabayCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
-        //collectionView.prefetchDataSource = self
+       
+        getCachedImages()
         loadImages()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -51,18 +52,26 @@ class PixabayCollectionViewController: UICollectionViewController {
     
     //MARK:-Load Image to cell
     private func loadImage(for cell: ImageViewCell, at index: Int) {
-        let info = imagesInfo[index]
         if let image = images[index]{
             cell.configure(with: image)
             return
         }
+        let info = imagesInfo[index]
         NetworkService.shared.loadImage(from: info.webformatURL) { (image) in
-                self.images[index] = image
-                cell.configure(with: self.images[index])
+            self.images[index] = image
+            CacheManager.shared.cacheImage(image, with: info.id)
+            cell.configure(with: self.images[index])
             
         }
         
-        
+    }
+    
+    
+    private func getCachedImages(){
+        CacheManager.shared.getCachedImages { (images) in
+            self.images = images
+            self.collectionView.reloadData()
+        }
     }
     
     //MARK:-Show Alert
