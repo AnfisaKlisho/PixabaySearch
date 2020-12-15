@@ -11,6 +11,7 @@ import UIKit
 
 class PixabayCollectionViewController: UICollectionViewController {
     
+    private var activityIndicator = UIActivityIndicatorView()
 
     private var images: [UIImage?] = []
     private var imagesInfo = [ImageInfo]()
@@ -25,22 +26,29 @@ class PixabayCollectionViewController: UICollectionViewController {
         configure()
         //loadImages()
         //getCachedImages()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
 
     }
     
     private func configure(){
         collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
-        
         setupSearchController()
+        
+        //activity indicator
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.style = .large
+        activityIndicator.color = .cyan
+        activityIndicator.frame = collectionView.bounds
+        activityIndicator.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.addSubview(activityIndicator)
+        //
+        
     }
     
+    //MARK:-Search Controller Configure
     private func setupSearchController(){
         let searchC = UISearchController(searchResultsController: nil)
         searchC.searchBar.placeholder = "Search"
         searchC.searchBar.returnKeyType = .search
-        //searchC.searchResultsUpdater = self
         searchC.searchBar.delegate = self
         navigationItem.searchController = searchC
         
@@ -51,7 +59,9 @@ class PixabayCollectionViewController: UICollectionViewController {
         self.fetchMore = false
         imagesInfo.removeAll()
         images.removeAll()
+        activityIndicator.startAnimating()
         NetworkService.shared.fetchImages(query: query, amount: 200, page: page) { (result) in
+            self.activityIndicator.stopAnimating()
             switch result{
             case let .failure(error):
                 print(error)
@@ -181,19 +191,6 @@ class PixabayCollectionViewController: UICollectionViewController {
 
 }
 
-
-//MARK:-SearchResultsUpdating
-//extension PixabayCollectionViewController: UISearchResultsUpdating{
-//    func updateSearchResults(for searchController: UISearchController) {
-//        guard let query = searchController.searchBar.text, query.count >= 3 else{
-//            return
-//        }
-//        //searchController.searchBar.pressesEnded(<#T##presses: Set<UIPress>##Set<UIPress>#>, with: <#T##UIPressesEvent?#>)
-//        loadImages(query: query)
-//    }
-//
-//
-//}
 extension PixabayCollectionViewController: UISearchBarDelegate{
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, query.count >= 3 else{
