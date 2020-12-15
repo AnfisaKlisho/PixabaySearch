@@ -69,6 +69,7 @@ class CacheManager{
         
     }
     
+    //MARK:-Get a list of images
     func getCachedImages(completion: ([UIImage])-> Void){
         var images = [UIImage]()
         let imagePaths = getCachedImagePaths()

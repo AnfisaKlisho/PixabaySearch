@@ -22,19 +22,36 @@ class PixabayCollectionViewController: UICollectionViewController {
     //MARK:-Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
-       
-        getCachedImages()
-        loadImages()
+        configure()
+        //loadImages()
+        //getCachedImages()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
     }
+    
+    private func configure(){
+        collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
+        
+        setupSearchController()
+    }
+    
+    private func setupSearchController(){
+        let searchC = UISearchController(searchResultsController: nil)
+        searchC.searchBar.placeholder = "Search"
+        searchC.searchBar.returnKeyType = .search
+        //searchC.searchResultsUpdater = self
+        searchC.searchBar.delegate = self
+        navigationItem.searchController = searchC
+        
+    }
 
     //MARK:-Load Images
-    private func loadImages(){
+    private func loadImages(query: String){
         self.fetchMore = false
-        NetworkService.shared.fetchImages(amount: 200, page: page) { (result) in
+        imagesInfo.removeAll()
+        images.removeAll()
+        NetworkService.shared.fetchImages(query: query, amount: 200, page: page) { (result) in
             switch result{
             case let .failure(error):
                 print(error)
@@ -58,10 +75,11 @@ class PixabayCollectionViewController: UICollectionViewController {
         }
         let info = imagesInfo[index]
         NetworkService.shared.loadImage(from: info.webformatURL) { (image) in
-            self.images[index] = image
-            CacheManager.shared.cacheImage(image, with: info.id)
-            cell.configure(with: self.images[index])
-            
+            if index < self.images.count{
+                self.images[index] = image
+                //CacheManager.shared.cacheImage(image, with: info.id)
+                cell.configure(with: self.images[index])
+            }
         }
         
     }
@@ -93,7 +111,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         if offsetY > contentHeight - scrollView.frame.height {
             if fetchMore && page < 3{
                 page += 1
-                loadImages()
+                //loadImages()
                 
             }
         }}
@@ -161,41 +179,28 @@ class PixabayCollectionViewController: UICollectionViewController {
         return UICollectionViewCompositionalLayout(section: section)
     }
 
-    
-    
-    
-    
-    // MARK: UICollectionViewDelegate
+}
 
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
+
+//MARK:-SearchResultsUpdating
+//extension PixabayCollectionViewController: UISearchResultsUpdating{
+//    func updateSearchResults(for searchController: UISearchController) {
+//        guard let query = searchController.searchBar.text, query.count >= 3 else{
+//            return
+//        }
+//        //searchController.searchBar.pressesEnded(<#T##presses: Set<UIPress>##Set<UIPress>#>, with: <#T##UIPressesEvent?#>)
+//        loadImages(query: query)
+//    }
+//
+//
+//}
+extension PixabayCollectionViewController: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text, query.count >= 3 else{
+            return}
+        
+        loadImages(query: query)
     }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
-    }
-    */
-
 }
 
 
