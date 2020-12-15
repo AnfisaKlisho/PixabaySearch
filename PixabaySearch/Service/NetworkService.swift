@@ -47,11 +47,13 @@ class NetworkService{
 
     
     //MARK:- Fetch Images
-    func fetchImages(amount: Int, completion: @escaping (Result<[ImageInfo], SessionError>) -> Void){
+    func fetchImages(amount: Int, page: Int, completion: @escaping (Result<[ImageInfo], SessionError>) -> Void){
         var urlComps = baseUrlComponent
         urlComps.queryItems? += [
+            URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "per_page", value: "\(amount)"),
             URLQueryItem(name: "editors_choice", value: "\(true)")
+            
         ]
         
         guard let url = urlComps.url else {

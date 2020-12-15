@@ -14,14 +14,17 @@ class PixabayCollectionViewController: UICollectionViewController {
 
     private var images: [UIImage?] = []
     private var imagesInfo = [ImageInfo]()
+    private var page = 1
+    private var fetchMore = false
     
     
    
     //MARK:-Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadImages()
         collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
+        //collectionView.prefetchDataSource = self
+        loadImages()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -29,15 +32,17 @@ class PixabayCollectionViewController: UICollectionViewController {
 
     //MARK:-Load Images
     private func loadImages(){
-        NetworkService.shared.fetchImages(amount: 40) { (result) in
+        self.fetchMore = false
+        NetworkService.shared.fetchImages(amount: 200, page: page) { (result) in
             switch result{
             case let .failure(error):
                 print(error)
                 //MARK:-Show Alert
             
             case let .success(imagesInfo):
-                self.imagesInfo = imagesInfo
-                self.images = Array(repeating: nil, count: imagesInfo.count)
+                self.imagesInfo += imagesInfo
+                self.images += Array(repeating: nil, count: imagesInfo.count)
+                self.fetchMore = true
                 self.collectionView.reloadData()
             
             }
@@ -60,11 +65,25 @@ class PixabayCollectionViewController: UICollectionViewController {
         
     }
     
+    
+    //MARK:-Infinite Scroll Implementation
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+
+        if offsetY > contentHeight - scrollView.frame.height {
+            if fetchMore {
+                page += 1
+                loadImages()
+                
+            }
+        }}
+    
 
 
     // MARK: UICollectionViewDataSource
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return imagesInfo.count / 12 * 5
+        return imagesInfo.count / 12
     }
 
 
@@ -83,6 +102,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         return cell
     }
 
+    
     //MARK:-Compositional Layout
     static func createLayout() -> UICollectionViewCompositionalLayout{
         
@@ -158,3 +178,8 @@ class PixabayCollectionViewController: UICollectionViewController {
     */
 
 }
+
+
+    
+    
+
