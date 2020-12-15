@@ -37,7 +37,7 @@ class PixabayCollectionViewController: UICollectionViewController {
             switch result{
             case let .failure(error):
                 print(error)
-                //MARK:-Show Alert
+                self.showAlert(title: error.localizedDescription)
             
             case let .success(imagesInfo):
                 self.imagesInfo += imagesInfo
@@ -65,14 +65,24 @@ class PixabayCollectionViewController: UICollectionViewController {
         
     }
     
+    //MARK:-Show Alert
+    private func showAlert(title: String){
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+       present(alert, animated: true, completion: nil)
+    }
+    
     
     //MARK:-Infinite Scroll Implementation
+    //Maximal number of page is 3
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
 
         if offsetY > contentHeight - scrollView.frame.height {
-            if fetchMore {
+            if fetchMore && page < 3{
                 page += 1
                 loadImages()
                 
