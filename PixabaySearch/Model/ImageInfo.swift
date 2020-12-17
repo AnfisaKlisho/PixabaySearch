@@ -11,10 +11,11 @@ struct ImageInfo: Decodable{
     var id: Int
     var previewURL: URL
     var webformatURL: URL
-    //var views: Int
-    //var downloads: Int
-    //var likes: Int
-    //var user: String
-    //var userImageURL: URL?
+    var views: Int
+    var comments: Int
+    var likes: Int
+    var favorites: Int
+    var user: String?
+    var userImageURL: String
     
 }

@@ -12,37 +12,43 @@ import UIKit
 class PixabayCollectionViewController: UICollectionViewController {
     
     private var activityIndicator = UIActivityIndicatorView()
+    
+    private var currentQuery = ""
 
     private var images: [UIImage?] = []
     private var imagesInfo = [ImageInfo]()
     private var page = 1
     private var fetchMore = false
     
+    private let detailVCSegueIdentifier = "ShowPhotoDetails"
     
    
     //MARK:-Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-        //loadImages()
+        
         //getCachedImages()
+        //loadImages()
 
     }
     
     private func configure(){
-        collectionView.collectionViewLayout = PixabayCollectionViewController.createLayout()
+        collectionView.collectionViewLayout = CompositionalLayout.createLayout()
         setupSearchController()
+        setupActivityIndicator()
         
-        //activity indicator
+    }
+    
+    //MARK:-Setup Spinner
+    private func setupActivityIndicator(){
         activityIndicator.hidesWhenStopped = true
         activityIndicator.style = .large
-        activityIndicator.color = .cyan
         activityIndicator.frame = collectionView.bounds
         activityIndicator.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.addSubview(activityIndicator)
-        //
-        
     }
+    
     
     //MARK:-Search Controller Configure
     private func setupSearchController(){
@@ -50,16 +56,31 @@ class PixabayCollectionViewController: UICollectionViewController {
         searchC.searchBar.placeholder = "Search"
         searchC.searchBar.returnKeyType = .search
         searchC.searchBar.delegate = self
+        searchC.obscuresBackgroundDuringPresentation = false
+        searchC.searchBar.autocorrectionType = .yes
         navigationItem.searchController = searchC
         
     }
+    
+    //MARK:-Update UI
+    private func updateUI(){
+        UIView.transition(with: collectionView, duration: 0.5, options: .transitionCrossDissolve, animations: {
+                    self.collectionView.reloadData()
+                }, completion: nil)
+    }
+    
 
     //MARK:-Load Images
     private func loadImages(query: String){
+        if !fetchMore{
+            imagesInfo.removeAll()
+            images.removeAll()
+            updateUI()
+        }
+        
         self.fetchMore = false
-        imagesInfo.removeAll()
-        images.removeAll()
         activityIndicator.startAnimating()
+        
         NetworkService.shared.fetchImages(query: query, amount: 200, page: page) { (result) in
             self.activityIndicator.stopAnimating()
             switch result{
@@ -71,7 +92,7 @@ class PixabayCollectionViewController: UICollectionViewController {
                 self.imagesInfo += imagesInfo
                 self.images += Array(repeating: nil, count: imagesInfo.count)
                 self.fetchMore = true
-                self.collectionView.reloadData()
+                self.updateUI()
             
             }
         }
@@ -87,7 +108,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         NetworkService.shared.loadImage(from: info.webformatURL) { (image) in
             if index < self.images.count{
                 self.images[index] = image
-                //CacheManager.shared.cacheImage(image, with: info.id)
+                CacheManager.shared.cacheImage(image, with: info.id)
                 cell.configure(with: self.images[index])
             }
         }
@@ -98,7 +119,8 @@ class PixabayCollectionViewController: UICollectionViewController {
     private func getCachedImages(){
         CacheManager.shared.getCachedImages { (images) in
             self.images = images
-            self.collectionView.reloadData()
+            self.updateUI()
+
         }
     }
     
@@ -113,7 +135,7 @@ class PixabayCollectionViewController: UICollectionViewController {
     
     
     //MARK:-Infinite Scroll Implementation
-    //Maximal number of page is 3
+    ///Maximal number of page is 3
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -121,7 +143,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         if offsetY > contentHeight - scrollView.frame.height {
             if fetchMore && page < 3{
                 page += 1
-                //loadImages()
+                loadImages(query: currentQuery)
                 
             }
         }}
@@ -148,55 +170,38 @@ class PixabayCollectionViewController: UICollectionViewController {
     
         return cell
     }
-
     
-    //MARK:-Compositional Layout
-    static func createLayout() -> UICollectionViewCompositionalLayout{
+    //MARK:-Prepare for segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == detailVCSegueIdentifier{
+            guard let pictureDetailsVC = segue.destination as? PictureDetailsViewController,
+                  let imageInfo = sender as? ImageInfo
+            else{
+                return
+            }
+            pictureDetailsVC.imageInfo = imageInfo
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let spacing: CGFloat = 2
-        //items
-        let squareBigItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalWidth(0.5)))
-        let horizontalItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5)))
-        let smallSquareItemNearHorizontal = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1)))
-        let smallSquareItem = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(1)))
-        
-        squareBigItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
-        horizontalItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
-        smallSquareItem.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
-        smallSquareItemNearHorizontal.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
-
-        //groups
-        
-        let twoSquareItemsGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5)), subitem: smallSquareItemNearHorizontal, count: 2)
-        let threeItemsGroup = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalWidth(0.5)), subitems: [
-                        horizontalItem,
-                        twoSquareItemsGroup])
-        
-        let bigGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5)), subitems: [squareBigItem, threeItemsGroup])
-        
-        let reversedBigGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5)), subitems: [threeItemsGroup, squareBigItem])
-        
-        let fourGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(1/3)), subitem: smallSquareItem, count: 4)
-        
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(4/3)), subitems: [
-            bigGroup,
-            reversedBigGroup,
-            fourGroup,
-        ])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        
-        return UICollectionViewCompositionalLayout(section: section)
+        collectionView.deselectItem(at: indexPath, animated: true)
+        performSegue(withIdentifier: detailVCSegueIdentifier, sender: imagesInfo[indexPath.row + indexPath.section * 12])
     }
 
 }
+   
 
+//MARK:-Implementation of searching of images
 extension PixabayCollectionViewController: UISearchBarDelegate{
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, query.count >= 3 else{
             return}
+        currentQuery = query
+        self.fetchMore = false
+        loadImages(query: currentQuery)
         
-        loadImages(query: query)
     }
 }
 
