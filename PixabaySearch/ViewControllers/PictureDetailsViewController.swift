@@ -68,6 +68,13 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         }
     }
     
+//MARK:-Share Button
+    @IBAction func shareButtonClicked(_ sender: Any) {
+        let activityVC = UIActivityViewController(activityItems: [photoImage.image!], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        self.present(activityVC, animated: true, completion: nil)
+    }
+    
     
 }
 

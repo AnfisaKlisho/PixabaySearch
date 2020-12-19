@@ -9,7 +9,6 @@ import Foundation
 
 struct ImageInfo: Decodable{
     var id: Int
-    var previewURL: URL
     var webformatURL: URL
     var views: Int
     var comments: Int

@@ -28,7 +28,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         super.viewDidLoad()
         configure()
         
-        //getCachedImages()
+        getCachedImages()
         //loadImages()
 
     }
@@ -64,9 +64,7 @@ class PixabayCollectionViewController: UICollectionViewController {
     
     //MARK:-Update UI
     private func updateUI(){
-        UIView.transition(with: collectionView, duration: 0.5, options: .transitionCrossDissolve, animations: {
-                    self.collectionView.reloadData()
-                }, completion: nil)
+        self.collectionView.reloadSections(IndexSet(arrayLiteral: 0))
     }
     
 
@@ -81,7 +79,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         self.fetchMore = false
         activityIndicator.startAnimating()
         
-        NetworkService.shared.fetchImages(query: query, amount: 200, page: page) { (result) in
+        NetworkService.shared.fetchImages(query: query, amount: 60, page: page) { (result) in
             self.activityIndicator.stopAnimating()
             switch result{
             case let .failure(error):
@@ -100,6 +98,7 @@ class PixabayCollectionViewController: UICollectionViewController {
     
     //MARK:-Load Image to cell
     private func loadImage(for cell: ImageViewCell, at index: Int) {
+
         if let image = images[index]{
             cell.configure(with: image)
             return
@@ -112,7 +111,7 @@ class PixabayCollectionViewController: UICollectionViewController {
                 cell.configure(with: self.images[index])
             }
         }
-        
+    
     }
     
     
@@ -135,13 +134,13 @@ class PixabayCollectionViewController: UICollectionViewController {
     
     
     //MARK:-Infinite Scroll Implementation
-    ///Maximal number of page is 3
+    ///Maximal number of page is 9 for number of pictures per page equal to 60
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
 
         if offsetY > contentHeight - scrollView.frame.height {
-            if fetchMore && page < 3{
+            if fetchMore && page < 9{
                 page += 1
                 loadImages(query: currentQuery)
                 
@@ -151,13 +150,8 @@ class PixabayCollectionViewController: UICollectionViewController {
 
 
     // MARK: UICollectionViewDataSource
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return imagesInfo.count / 12
-    }
-
-
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
+        return images.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

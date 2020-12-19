@@ -53,7 +53,7 @@ class NetworkService{
             URLQueryItem(name: "q", value: query),
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "per_page", value: "\(amount)"),
-            URLQueryItem(name: "editors_choice", value: "\(true)")
+            
             
         ]
         
@@ -61,6 +61,7 @@ class NetworkService{
             completion(.failure(.invalidURL))
             return
         }
+        //print(url)
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
