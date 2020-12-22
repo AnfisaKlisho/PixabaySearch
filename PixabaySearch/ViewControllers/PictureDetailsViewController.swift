@@ -36,7 +36,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         userImage.layer.cornerRadius = userImage.frame.size.width / 2
         userImage.clipsToBounds = true
         
-        loadPhoto(from: imageInfo.webformatURL)
+        loadPhoto(from: imageInfo.webformatURL, with: imageInfo.id)
         loadUserPhoto(from: imageInfo.userImageURL)
         
         
@@ -52,8 +52,8 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         }
     }
     
-    private func loadPhoto(from url: URL?){
-        NetworkService.shared.loadImage(from: url) { (image) in
+    private func loadPhoto(from url: URL?, with id: Int){
+        NetworkService.shared.loadImage(from: url, with: id) { (image) in
             self.photoImage.image = image
         }
     }
@@ -63,7 +63,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
             userImage.image = UIImage(named: "default-user-image")
             return
         }
-        NetworkService.shared.loadImage(from: url) { (image) in
+        NetworkService.shared.loadImage(from: url, with: 0) { (image) in
             self.userImage.image = image
         }
     }

@@ -11,8 +11,7 @@ import UIKit
 
 class PixabayCollectionViewController: UICollectionViewController {
     
-    private var activityIndicator = UIActivityIndicatorView()
-    
+    private let activityIndicator = UIActivityIndicatorView()
     private var currentQuery = ""
 
     private var images: [UIImage?] = []
@@ -22,7 +21,8 @@ class PixabayCollectionViewController: UICollectionViewController {
     
     private let detailVCSegueIdentifier = "ShowPhotoDetails"
     
-   
+    
+    
     //MARK:-Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,19 +36,11 @@ class PixabayCollectionViewController: UICollectionViewController {
     private func configure(){
         collectionView.collectionViewLayout = CompositionalLayout.createLayout()
         setupSearchController()
-        setupActivityIndicator()
+        setupActivityIndicator(for: activityIndicator)
         
     }
     
-    //MARK:-Setup Spinner
-    private func setupActivityIndicator(){
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.style = .large
-        activityIndicator.frame = collectionView.bounds
-        activityIndicator.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.addSubview(activityIndicator)
-    }
-    
+   
     
     //MARK:-Search Controller Configure
     private func setupSearchController(){
@@ -62,10 +54,6 @@ class PixabayCollectionViewController: UICollectionViewController {
         
     }
     
-    //MARK:-Update UI
-    private func updateUI(){
-        self.collectionView.reloadSections(IndexSet(arrayLiteral: 0))
-    }
     
 
     //MARK:-Load Images
@@ -104,7 +92,7 @@ class PixabayCollectionViewController: UICollectionViewController {
             return
         }
         let info = imagesInfo[index]
-        NetworkService.shared.loadImage(from: info.webformatURL) { (image) in
+        NetworkService.shared.loadImage(from: info.webformatURL, with: info.id) { (image) in
             if index < self.images.count{
                 self.images[index] = image
                 CacheManager.shared.cacheImage(image, with: info.id)
@@ -123,14 +111,6 @@ class PixabayCollectionViewController: UICollectionViewController {
         }
     }
     
-    //MARK:-Show Alert
-    private func showAlert(title: String){
-        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        
-       present(alert, animated: true, completion: nil)
-    }
     
     
     //MARK:-Infinite Scroll Implementation
@@ -147,23 +127,63 @@ class PixabayCollectionViewController: UICollectionViewController {
             }
         }}
     
+    //MARK:-Load Header
+    func loadHeader(for header: SearchHeaderView){
+        if images.count == 0{
+            header.configure(with: "")
+        }
+        else if currentQuery.count == 0{
+            header.configure(with: "Last searched: ")
+        }
+        else{
+            header.configure(with: "Search results for: '\(currentQuery)'")
+        }
+        
+    }
+    
 
 
     // MARK: UICollectionViewDataSource
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else{
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.searchIdentifier, for: indexPath) as? ImageViewCell else{
             fatalError("Invalid cell type")
         }
         
-        loadImage(for: cell, at: indexPath.row + indexPath.section * 12)
+        loadImage(for: cell, at: indexPath.row)
         
     
         return cell
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let reusableView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SearchHeaderView.identifier, for: indexPath) as? SearchHeaderView else{
+            fatalError("Invalid reusable view kind")
+        }
+        
+        loadHeader(for: reusableView)
+        
+        return reusableView
+
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        collectionView.deselectItem(at: indexPath, animated: true)
+        if imagesInfo.count > 0{
+        performSegue(withIdentifier: detailVCSegueIdentifier, sender: imagesInfo[indexPath.row])
+        }
+    }
+    
+    
     
     //MARK:-Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -177,13 +197,6 @@ class PixabayCollectionViewController: UICollectionViewController {
         }
     }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        collectionView.deselectItem(at: indexPath, animated: true)
-        if imagesInfo.count > 0{
-        performSegue(withIdentifier: detailVCSegueIdentifier, sender: imagesInfo[indexPath.row + indexPath.section * 12])
-        }
-    }
 
 }
    
@@ -197,6 +210,7 @@ extension PixabayCollectionViewController: UISearchBarDelegate{
         currentQuery = query
         self.fetchMore = false
         loadImages(query: currentQuery)
+        
         
     }
 }

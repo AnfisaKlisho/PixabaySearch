@@ -25,7 +25,13 @@ class NetworkService{
     }
     
     //MARK:- Load Image
-    func loadImage(from url: URL?, completion: @escaping (UIImage?) -> Void) {
+    func loadImage(from url: URL?, with id: Int, completion: @escaping (UIImage?) -> Void) {
+        CacheManager.shared.getImage(with: id) { (image) in
+            if let image = image{
+                completion(image)
+        }
+            else{
+        
             guard let url = url else {
                 completion(nil)
                 return
@@ -43,6 +49,8 @@ class NetworkService{
             }.resume()
             
         }
+        }
+    }
 
 
     
@@ -53,7 +61,55 @@ class NetworkService{
             URLQueryItem(name: "q", value: query),
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "per_page", value: "\(amount)"),
+            URLQueryItem(name: "image_type", value: "photo")
             
+        ]
+        
+        guard let url = urlComps.url else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        //print(url)
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(.other(error)))
+                }
+                return
+            }
+            
+            let response = response as! HTTPURLResponse
+            guard let data = data, response.statusCode == 200 else{
+                DispatchQueue.main.async {
+                    completion(.failure(.serverError(response.statusCode)))
+                }
+                return
+            }
+            
+            do {
+                let serverResponse = try JSONDecoder().decode(ServerResponse<ImageInfo>.self, from: data)
+                DispatchQueue.main.async {
+                    completion(.success(serverResponse.hits))
+                }
+            }
+            
+            catch let decodingError{
+                DispatchQueue.main.async {
+                    completion(.failure(.decodingError(decodingError)))
+                }
+            }
+            
+        }.resume()
+    }
+    
+    //MARK:-Fetch Editor's choice images
+    func fetchEditorsImages(amount: Int, completion: @escaping (Result<[ImageInfo], SessionError>) -> Void){
+        var urlComps = baseUrlComponent
+        urlComps.queryItems? += [
+            URLQueryItem(name: "per_page", value: "\(amount)"),
+            URLQueryItem(name: "image_type", value: "photo"),
+            URLQueryItem(name: "editors_choice", value: "\(true)")
             
         ]
         

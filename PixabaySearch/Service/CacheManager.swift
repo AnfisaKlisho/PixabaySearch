@@ -46,7 +46,7 @@ class CacheManager{
             
             do{
                 try data.write(to: imageUrl)
-                print("Image was saved to: \(imageUrl)")
+                //print("Image was saved to: \(imageUrl)")
                 completion?(true)
             }
             

@@ -19,9 +19,12 @@
 		1B5FB0F62586B9F600637B31 /* SessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5FB0F52586B9F600637B31 /* SessionError.swift */; };
 		1B5FB0FA2586BDE300637B31 /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5FB0F92586BDE300637B31 /* ServerResponse.swift */; };
 		1B5FB0FE2586C62700637B31 /* ImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5FB0FD2586C62700637B31 /* ImageViewCell.swift */; };
+		1BD78E0825921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E0725921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift */; };
+		1BD78E0E25922F0E005DAD80 /* SearchHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E0D25922F0E005DAD80 /* SearchHeaderView.swift */; };
+		1BD78E1525925BCC005DAD80 /* CompositionalLayoutForEditors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E1425925BCC005DAD80 /* CompositionalLayoutForEditors.swift */; };
+		1BD78E1825925EAB005DAD80 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E1725925EAB005DAD80 /* Extension.swift */; };
 		1BE1A3D8258A45800026F967 /* PictureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE1A3D7258A45800026F967 /* PictureDetailsViewController.swift */; };
 		1BE58A2C258904C9004B1316 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE58A2B258904C9004B1316 /* CacheManager.swift */; };
-		1BE58A2F258951C3004B1316 /* pixabayIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE58A2E258951C2004B1316 /* pixabayIcon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,9 +42,12 @@
 		1B5FB0F52586B9F600637B31 /* SessionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionError.swift; sourceTree = "<group>"; };
 		1B5FB0F92586BDE300637B31 /* ServerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
 		1B5FB0FD2586C62700637B31 /* ImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCell.swift; sourceTree = "<group>"; };
+		1BD78E0725921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorsChoiceCollectionViewController.swift; sourceTree = "<group>"; };
+		1BD78E0D25922F0E005DAD80 /* SearchHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHeaderView.swift; sourceTree = "<group>"; };
+		1BD78E1425925BCC005DAD80 /* CompositionalLayoutForEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionalLayoutForEditors.swift; sourceTree = "<group>"; };
+		1BD78E1725925EAB005DAD80 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		1BE1A3D7258A45800026F967 /* PictureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureDetailsViewController.swift; sourceTree = "<group>"; };
 		1BE58A2B258904C9004B1316 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
-		1BE58A2E258951C2004B1316 /* pixabayIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pixabayIcon.png; path = ../../../../Documents/pixabayIcon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +88,6 @@
 				1B4C75792580FED600E20FE3 /* Storyboards */,
 				1B4C756A2580F82600E20FE3 /* Assets.xcassets */,
 				1B4C756F2580F82600E20FE3 /* Info.plist */,
-				1BE58A2E258951C2004B1316 /* pixabayIcon.png */,
 			);
 			path = PixabaySearch;
 			sourceTree = "<group>";
@@ -110,6 +115,7 @@
 			children = (
 				1B4C757B2580FF4900E20FE3 /* PixabayCollectionViewController.swift */,
 				1BE1A3D7258A45800026F967 /* PictureDetailsViewController.swift */,
+				1BD78E0725921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -120,6 +126,8 @@
 				1B4C75802580FFB000E20FE3 /* NetworkService.swift */,
 				1BE58A2B258904C9004B1316 /* CacheManager.swift */,
 				1B07B820258AC22C006760C5 /* CompositionalLayout.swift */,
+				1BD78E1425925BCC005DAD80 /* CompositionalLayoutForEditors.swift */,
+				1BD78E1725925EAB005DAD80 /* Extension.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -138,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				1B5FB0FD2586C62700637B31 /* ImageViewCell.swift */,
+				1BD78E0D25922F0E005DAD80 /* SearchHeaderView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -200,7 +209,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B4C756E2580F82600E20FE3 /* LaunchScreen.storyboard in Resources */,
-				1BE58A2F258951C3004B1316 /* pixabayIcon.png in Resources */,
 				1B4C756B2580F82600E20FE3 /* Assets.xcassets in Resources */,
 				1B4C75692580F82500E20FE3 /* Main.storyboard in Resources */,
 			);
@@ -218,11 +226,15 @@
 				1BE58A2C258904C9004B1316 /* CacheManager.swift in Sources */,
 				1B5FB0F32586B7B900637B31 /* ImageInfo.swift in Sources */,
 				1B4C75642580F82400E20FE3 /* SceneDelegate.swift in Sources */,
+				1BD78E0E25922F0E005DAD80 /* SearchHeaderView.swift in Sources */,
 				1B4C75812580FFB000E20FE3 /* NetworkService.swift in Sources */,
 				1B5FB0FE2586C62700637B31 /* ImageViewCell.swift in Sources */,
+				1BD78E1525925BCC005DAD80 /* CompositionalLayoutForEditors.swift in Sources */,
 				1B07B821258AC22C006760C5 /* CompositionalLayout.swift in Sources */,
 				1B5FB0FA2586BDE300637B31 /* ServerResponse.swift in Sources */,
 				1B4C757C2580FF4900E20FE3 /* PixabayCollectionViewController.swift in Sources */,
+				1BD78E0825921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift in Sources */,
+				1BD78E1825925EAB005DAD80 /* Extension.swift in Sources */,
 				1B5FB0F62586B9F600637B31 /* SessionError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

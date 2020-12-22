@@ -4,10 +4,6 @@
 <dict>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Allow access to Photo Library to save the image</string>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string>pixabayIcon.png</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

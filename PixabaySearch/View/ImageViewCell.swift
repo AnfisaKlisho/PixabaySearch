@@ -8,7 +8,9 @@
 import UIKit
 
 class ImageViewCell: UICollectionViewCell {
-    static let identifier = "Cell"
+    static let searchIdentifier = "Cell"
+    static let editorsIdentifier = "EditorsCell"
+    
    
     
     @IBOutlet private weak var imageView: UIImageView!
