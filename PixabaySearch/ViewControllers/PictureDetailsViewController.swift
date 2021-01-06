@@ -10,10 +10,17 @@ import UIKit
 class PictureDetailsViewController: UIViewController, UIPopoverPresentationControllerDelegate {
     
     private let userImageSegueIndentifier = "ShowUserImage"
-
+    
+    var imageScrollView: ImageScrollView!
+    
+    
     @IBOutlet private weak var userImage: UIImageView!
     @IBOutlet private weak var userNameLabel: UILabel!
-    @IBOutlet private weak var photoImage: UIImageView!
+    
+    //@IBOutlet private weak var photoImage: UIImageView!
+    
+   
+    
     @IBOutlet private weak var likesLabel: UILabel!
     @IBOutlet private weak var viewsLabel: UILabel!
     @IBOutlet private weak var commentsLabel: UILabel!
@@ -23,8 +30,20 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        imageScrollView = ImageScrollView(frame: view.bounds)
+        view.addSubview(imageScrollView)
+        setupImageScrollView()
         configure()
 
+    }
+    
+    func setupImageScrollView(){
+        imageScrollView.translatesAutoresizingMaskIntoConstraints = false
+        imageScrollView.topAnchor.constraint(equalTo: userImage.bottomAnchor, constant: 20).isActive = true
+        imageScrollView.bottomAnchor.constraint(equalTo: likesLabel.topAnchor, constant: -20).isActive = true
+        imageScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        imageScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
     }
     
     private func configure(){
@@ -54,7 +73,8 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     
     private func loadPhoto(from url: URL?, with id: Int){
         NetworkService.shared.loadImage(from: url, with: id) { (image) in
-            self.photoImage.image = image
+            //self.photoImage.image = image
+            self.imageScrollView.set(image: image!)
         }
     }
     
@@ -70,7 +90,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     
 //MARK:-Share Button
     @IBAction func shareButtonClicked(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [photoImage.image!], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [imageScrollView.imageZoomView!], applicationActivities: nil)
         activityVC.popoverPresentationController?.sourceView = self.view
         self.present(activityVC, animated: true, completion: nil)
     }

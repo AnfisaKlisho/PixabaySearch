@@ -125,9 +125,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AJy-Tl-j7u">
-                                <rect key="frame" x="0.0" y="188" width="428" height="585"/>
-                            </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" image="heart" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="JAY-oR-LZs">
                                 <rect key="frame" x="20" y="795" width="30" height="27"/>
                                 <constraints>
@@ -204,9 +201,6 @@
                             <constraint firstItem="qOp-PC-tRb" firstAttribute="leading" secondItem="rev-j1-l6j" secondAttribute="trailing" constant="2" id="XEE-k5-Mfc"/>
                             <constraint firstItem="YvS-9m-JKJ" firstAttribute="top" secondItem="lgo-0k-57L" secondAttribute="top" constant="20" id="XO9-rm-6p9"/>
                             <constraint firstItem="qHy-Cx-kB0" firstAttribute="leading" secondItem="YvS-9m-JKJ" secondAttribute="trailing" constant="10" id="YFU-gP-zzd"/>
-                            <constraint firstItem="AJy-Tl-j7u" firstAttribute="top" secondItem="YvS-9m-JKJ" secondAttribute="bottom" constant="30" id="Yac-Al-2ac"/>
-                            <constraint firstItem="lgo-0k-57L" firstAttribute="trailing" secondItem="AJy-Tl-j7u" secondAttribute="trailing" id="aNo-9X-nE6"/>
-                            <constraint firstItem="AJy-Tl-j7u" firstAttribute="leading" secondItem="lgo-0k-57L" secondAttribute="leading" id="aQI-cl-eIe"/>
                             <constraint firstItem="pei-wx-5qg" firstAttribute="centerY" secondItem="CXh-FZ-6Oz" secondAttribute="centerY" id="cBD-T2-sk0"/>
                             <constraint firstItem="JAY-oR-LZs" firstAttribute="leading" secondItem="lgo-0k-57L" secondAttribute="leading" constant="20" id="cDa-3U-jcu"/>
                             <constraint firstItem="CXh-FZ-6Oz" firstAttribute="leading" secondItem="N3v-5F-phs" secondAttribute="trailing" constant="10" id="cU3-HD-ElB"/>
@@ -221,7 +215,6 @@
                             <constraint firstItem="qOp-PC-tRb" firstAttribute="centerY" secondItem="rev-j1-l6j" secondAttribute="centerY" id="p1N-85-Tz4"/>
                             <constraint firstItem="uEd-OS-Yrz" firstAttribute="leading" secondItem="JAY-oR-LZs" secondAttribute="trailing" constant="2" id="sqD-t8-YbA"/>
                             <constraint firstItem="pei-wx-5qg" firstAttribute="leading" secondItem="CXh-FZ-6Oz" secondAttribute="trailing" constant="2" id="tWQ-aO-ogX"/>
-                            <constraint firstItem="JAY-oR-LZs" firstAttribute="top" secondItem="AJy-Tl-j7u" secondAttribute="bottom" constant="20" id="tg4-BB-xcn"/>
                             <constraint firstItem="pRm-sb-v7u" firstAttribute="leading" secondItem="qHy-Cx-kB0" secondAttribute="trailing" constant="10" id="v2s-bM-hYN"/>
                         </constraints>
                     </view>
@@ -231,7 +224,7 @@
                             <rect key="frame" x="214" y="22" width="0.0" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Pixabay_Search-removebg-preview" translatesAutoresizingMaskIntoConstraints="NO" id="X2z-Re-vxA">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pixabaySearch-removebg-preview" translatesAutoresizingMaskIntoConstraints="NO" id="X2z-Re-vxA">
                                     <rect key="frame" x="-100" y="-20" width="200" height="40"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="X2z-Re-vxA" secondAttribute="height" multiplier="15:3" id="OA4-d8-9la"/>
@@ -250,7 +243,6 @@
                         <outlet property="commentsLabel" destination="N3v-5F-phs" id="EOR-a2-FfH"/>
                         <outlet property="favouritesLabel" destination="pei-wx-5qg" id="pHj-nG-zcw"/>
                         <outlet property="likesLabel" destination="uEd-OS-Yrz" id="yPe-aJ-qJu"/>
-                        <outlet property="photoImage" destination="AJy-Tl-j7u" id="cGy-hJ-ft5"/>
                         <outlet property="userImage" destination="YvS-9m-JKJ" id="FNs-TB-dUd"/>
                         <outlet property="userNameLabel" destination="qHy-Cx-kB0" id="Jzk-Ej-dcR"/>
                         <outlet property="viewsLabel" destination="qOp-PC-tRb" id="moA-Or-uOC"/>
@@ -395,10 +387,9 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="uhB-3k-qQO"/>
+        <segue reference="HBj-Ik-oxy"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="Pixabay_Search-removebg-preview" width="849" height="183"/>
         <image name="editorsChoice-removebg-preview" width="1221" height="203"/>
         <image name="eye" catalog="system" width="128" height="81"/>
         <image name="heart" catalog="system" width="128" height="109"/>

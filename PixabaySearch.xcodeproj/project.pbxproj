@@ -19,6 +19,7 @@
 		1B5FB0F62586B9F600637B31 /* SessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5FB0F52586B9F600637B31 /* SessionError.swift */; };
 		1B5FB0FA2586BDE300637B31 /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5FB0F92586BDE300637B31 /* ServerResponse.swift */; };
 		1B5FB0FE2586C62700637B31 /* ImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5FB0FD2586C62700637B31 /* ImageViewCell.swift */; };
+		1B9F742325A5D0F5007B9548 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9F742225A5D0F5007B9548 /* ImageScrollView.swift */; };
 		1BD78E0825921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E0725921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift */; };
 		1BD78E0E25922F0E005DAD80 /* SearchHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E0D25922F0E005DAD80 /* SearchHeaderView.swift */; };
 		1BD78E1525925BCC005DAD80 /* CompositionalLayoutForEditors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD78E1425925BCC005DAD80 /* CompositionalLayoutForEditors.swift */; };
@@ -42,6 +43,7 @@
 		1B5FB0F52586B9F600637B31 /* SessionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionError.swift; sourceTree = "<group>"; };
 		1B5FB0F92586BDE300637B31 /* ServerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
 		1B5FB0FD2586C62700637B31 /* ImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCell.swift; sourceTree = "<group>"; };
+		1B9F742225A5D0F5007B9548 /* ImageScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		1BD78E0725921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorsChoiceCollectionViewController.swift; sourceTree = "<group>"; };
 		1BD78E0D25922F0E005DAD80 /* SearchHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHeaderView.swift; sourceTree = "<group>"; };
 		1BD78E1425925BCC005DAD80 /* CompositionalLayoutForEditors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionalLayoutForEditors.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 			children = (
 				1B5FB0FD2586C62700637B31 /* ImageViewCell.swift */,
 				1BD78E0D25922F0E005DAD80 /* SearchHeaderView.swift */,
+				1B9F742225A5D0F5007B9548 /* ImageScrollView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 				1B5FB0FA2586BDE300637B31 /* ServerResponse.swift in Sources */,
 				1B4C757C2580FF4900E20FE3 /* PixabayCollectionViewController.swift in Sources */,
 				1BD78E0825921CE5005DAD80 /* EditorsChoiceCollectionViewController.swift in Sources */,
+				1B9F742325A5D0F5007B9548 /* ImageScrollView.swift in Sources */,
 				1BD78E1825925EAB005DAD80 /* Extension.swift in Sources */,
 				1B5FB0F62586B9F600637B31 /* SessionError.swift in Sources */,
 			);
