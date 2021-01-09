@@ -13,6 +13,8 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     
     var imageScrollView: ImageScrollView!
     
+    var currentImage = UIImage()
+    
     
     @IBOutlet private weak var userImage: UIImageView!
     @IBOutlet private weak var userNameLabel: UILabel!
@@ -37,6 +39,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
 
     }
     
+    //MARK:-Scroll View Constraints
     func setupImageScrollView(){
         imageScrollView.translatesAutoresizingMaskIntoConstraints = false
         imageScrollView.topAnchor.constraint(equalTo: userImage.bottomAnchor, constant: 20).isActive = true
@@ -46,6 +49,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         
     }
     
+    //MARK:-Configure
     private func configure(){
         likesLabel.text = stringFromInt(number: imageInfo.likes)
         commentsLabel.text = stringFromInt(number: imageInfo.comments)
@@ -74,6 +78,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     private func loadPhoto(from url: URL?, with id: Int){
         NetworkService.shared.loadImage(from: url, with: id) { (image) in
             //self.photoImage.image = image
+            self.currentImage = image!
             self.imageScrollView.set(image: image!)
         }
     }
@@ -90,7 +95,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     
 //MARK:-Share Button
     @IBAction func shareButtonClicked(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [imageScrollView.imageZoomView!], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [currentImage], applicationActivities: nil)
         activityVC.popoverPresentationController?.sourceView = self.view
         self.present(activityVC, animated: true, completion: nil)
     }

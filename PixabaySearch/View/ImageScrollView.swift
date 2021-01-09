@@ -29,7 +29,8 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         scrollViewSetup()
 
     }
-
+    
+    //MARK:-Pinch to Zoom
     func scrollViewSetup(){
         self.delegate = self
         self.showsVerticalScrollIndicator = false

@@ -103,6 +103,7 @@ class PixabayCollectionViewController: UICollectionViewController {
     }
     
     
+    //MARK:-Get Cached Images
     private func getCachedImages(){
         CacheManager.shared.getCachedImages { (images) in
             self.images = images
@@ -144,7 +145,6 @@ class PixabayCollectionViewController: UICollectionViewController {
 
 
     // MARK: UICollectionViewDataSource
-    
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
