@@ -51,10 +51,10 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
     
     //MARK:-Configure
     private func configure(){
-        likesLabel.text = stringFromInt(number: imageInfo.likes)
-        commentsLabel.text = stringFromInt(number: imageInfo.comments)
-        favouritesLabel.text = stringFromInt(number: imageInfo.favorites)
-        viewsLabel.text = stringFromInt(number: imageInfo.views)
+        likesLabel.text = formatedNumber(number: imageInfo.likes)
+        commentsLabel.text = formatedNumber(number: imageInfo.comments)
+        favouritesLabel.text = formatedNumber(number: imageInfo.favorites)
+        viewsLabel.text = formatedNumber(number: imageInfo.views)
         userNameLabel.text = imageInfo.user
         userImage.layer.cornerRadius = userImage.frame.size.width / 2
         userImage.clipsToBounds = true
@@ -65,8 +65,8 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         
     }
     
-    
-    private func stringFromInt(number: Int) -> String{
+    //MARK:-Convertation of numbers to strings
+    private func formatedNumber(number: Int) -> String{
         if number >= 1000{
             return "\(number / 1000).\(number % 1000 / 100)K"
         }
@@ -75,6 +75,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         }
     }
     
+    //MARK:-Load Photo
     private func loadPhoto(from url: URL?, with id: Int){
         NetworkService.shared.loadImage(from: url, with: id) { (image) in
             //self.photoImage.image = image
@@ -83,6 +84,7 @@ class PictureDetailsViewController: UIViewController, UIPopoverPresentationContr
         }
     }
     
+    //MARK:-Load User Photo
     private func loadUserPhoto(from address: String){
         guard let url = URL(string: address) else{
             userImage.image = UIImage(named: "default-user-image")

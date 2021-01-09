@@ -33,6 +33,7 @@ class PixabayCollectionViewController: UICollectionViewController {
 
     }
     
+    //MARK:-Configure
     private func configure(){
         collectionView.collectionViewLayout = CompositionalLayout.createLayout()
         setupSearchController()
@@ -179,7 +180,7 @@ class PixabayCollectionViewController: UICollectionViewController {
         
         collectionView.deselectItem(at: indexPath, animated: true)
         if imagesInfo.count > 0{
-        performSegue(withIdentifier: detailVCSegueIdentifier, sender: imagesInfo[indexPath.row])
+            performSegue(withIdentifier: detailVCSegueIdentifier, sender: imagesInfo[indexPath.row])
         }
     }
     

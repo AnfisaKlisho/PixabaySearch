@@ -71,7 +71,6 @@ class EditorsChoiceCollectionViewController: UICollectionViewController {
 
 
     // MARK: UICollectionViewDataSource
-
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
